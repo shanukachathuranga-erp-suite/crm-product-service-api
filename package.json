@@ -1,0 +1,19 @@
+{
+  "name": "crm-product-service-api",
+  "version": "1.0.0",
+  "description": "crm product service api",
+  "license": "ISC",
+  "author": "shanuka chathuranga",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "crm-product-service-api": "file:",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2"
+  }
+}
