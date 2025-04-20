@@ -38,10 +38,10 @@ const createCategory = async (request, response) => {
     const { categoryName, file, countryIds } = request.body;
     //check data is not Null
     if (!categoryName || !file || !countryIds) {
-      response.status(400).json({
+      return response.status(400).json({
         code: 400,
         message: "some fields are missing...",
-        data: result,
+        data: null,
       });
     }
 
@@ -69,34 +69,116 @@ const createCategory = async (request, response) => {
 
     response.status(201).json({
       code: 201,
-      message: "customer has been saved...",
+      message: "category has been saved...",
       data: saveData,
     });
-  } catch (err) {
+  } catch (e) {
     response
       .status(500)
-      .json({ code: 500, message: "something went wrong...", error: err });
+      .json({ code: 500, message: `something went wrong...`, error: `${e}` });
   }
 };
 
 //update    (put)
 const updateCategory = async (request, response) => {
-  console.log(request.body);
+  try {
+    const { categoryName } = request.body;
+    if (!categoryName) {
+      return response
+        .status(400)
+        .json({ code: 400, message: "fields are missing...", error: null });
+    }
+
+    const updateData = await CategorySchema.findOneAndUpdate(
+      { _id: request.params.id },
+      {
+        $set: {
+          categoryName: categoryName,
+        },
+      },
+      { new: true }
+    );
+    return response
+      .status(200)
+      .json({ code: 200, message: "updated...", data: updateData });
+  } catch (e) {
+    return response
+      .status(500)
+      .json({ code: 500, message: "something went wrong...", error: `${e}` });
+  }
 };
 
 //delete    (delete)
 const deleteCategory = async (request, response) => {
-  console.log(request.body);
+  try {
+    if (!request.params.id) {
+      return response
+        .status(400)
+        .json({ code: 400, message: "id required...", error: null });
+    }
+    const deletedData = await CategorySchema.findOneAndDelete({
+      _id: request.params.id,
+    });
+    return response
+      .status(204)
+      .json({ code: 204, message: "deleted...", data: deletedData });
+  } catch (e) {
+    return response
+      .status(500)
+      .json({ code: 500, message: "something went wrong...", error: `${e}` });
+  }
 };
 
 //search by id
 const findCategoryById = async (request, response) => {
-  console.log(request.body);
+  try {
+    if (!request.params.id) {
+      return response
+        .status(400)
+        .json({ code: 400, message: "id required...", error: null });
+    }
+    const categoryData = await CategorySchema.findById({
+      _id: request.params.id,
+    });
+    if (categoryData) {
+      return response
+        .status(200)
+        .json({ code: 200, message: "category data...", data: categoryData });
+    }
+    return response
+      .status(404)
+      .json({ code: 404, message: "not found...", data: null });
+  } catch (e) {
+    return response
+      .status(500)
+      .json({ code: 500, message: "something went wrong...", error: `${e}` });
+  }
 };
 
-//get all
+// get all
+// PAGINATION
 const findAllCategories = async (request, response) => {
-  console.log(request.body);
+  try {
+    const { searchText, page = 1, size = 10 } = request.query;
+    const pageIndex = parseInt(page);
+    const pageSize = parseInt(size);
+
+    const query = {};
+    if (searchText) {
+      query.$text = { $search: searchText };
+    }
+
+    const skip = (pageIndex - 1) * pageSize;
+    const categoryList = await CategorySchema.find(query).limit(pageSize).skip(skip);
+    const categoryListCount = await CategorySchema.countDocuments(query);
+    return response
+      .status(200)
+      .json({ code: 200, message: "category data...", data: {list: categoryList, dataCount: categoryListCount} });
+  } catch (e) {
+    return response
+      .status(500)
+      .json({ code: 500, message: "something went wrong...", error: `${e}` });
+  }
 };
 
 module.exports = {
