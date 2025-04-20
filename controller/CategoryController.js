@@ -3,8 +3,38 @@ const CategorySchema = require('../model/CategorySchema');
 
 //create    (post)
 const createCategory = async (request, response)=>{
-    console.log("data test")
-    console.log(request.body);
+    
+    const category = new CategorySchema({
+      // client side must send the file resource
+      // upload the icon to S3 bucket and get the response body
+      // client send the ids of all the available countries, and the system must find all the countries for that ids
+
+      categoryName: request.body.categoryName,
+      icon: {
+        hash: "temp-hash",
+        resourceUrl: "temp-url",
+        directory: "temp-directory",
+        fileName: "temp-file-name",
+      },
+      availableCountries: [
+        {
+            countryId: 'temp-id-1',
+            countryName: 'Sri Lank'
+        },
+        {
+            countryId: 'temp-id-2',
+            countryName: 'Switzerland'
+        }
+      ]
+    });
+
+    category.save().then(result=>{
+        response.status(201).json({code:201, message:'customer has been saved...', data:result});
+    }).catch(err=>{
+        response.status(500).json({code:500, message:'something went wrong', error:err});
+    })
+
+
 }
 
 //update    (put)
