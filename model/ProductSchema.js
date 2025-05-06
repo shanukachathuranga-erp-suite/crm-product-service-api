@@ -10,5 +10,22 @@ const ProductSchema = new mongoose.Schema({
     },
     oldPrice:{
         type:Number
+    },
+    qty: {
+        type:Number,
+    },
+    description: {
+        type:String,
+    },
+    images: {
+        type:Array,
+    },
+    discount: {
+        type:Object
+    },
+    category: {
+        type:Object
     }
 })
+
+module.exports = mongoose.model('product', ProductSchema);

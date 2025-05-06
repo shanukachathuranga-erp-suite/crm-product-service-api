@@ -90,7 +90,7 @@ const updateCategory = async (request, response) => {
     }
 
     const updateData = await CategorySchema.findOneAndUpdate(
-      { _id: request.params.id },
+      {'_id': request.params.id },
       {
         $set: {
           categoryName: categoryName,
@@ -117,7 +117,7 @@ const deleteCategory = async (request, response) => {
         .json({ code: 400, message: "id required...", error: null });
     }
     const deletedData = await CategorySchema.findOneAndDelete({
-      _id: request.params.id,
+      '_id': request.params.id,
     });
     return response
       .status(204)
@@ -138,7 +138,7 @@ const findCategoryById = async (request, response) => {
         .json({ code: 400, message: "id required...", error: null });
     }
     const categoryData = await CategorySchema.findById({
-      _id: request.params.id,
+      '_id': request.params.id,
     });
     if (categoryData) {
       return response
