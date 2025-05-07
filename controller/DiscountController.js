@@ -95,7 +95,7 @@ const updateDiscount = async (request, response) => {
     const { discountName, percentage, startDate, endDate } = request.body;
     if (!request.params.id) {
       return response.status(400).json({
-        code: 500,
+        code: 400,
         message: "id required",
         error: null,
       });
@@ -107,7 +107,7 @@ const updateDiscount = async (request, response) => {
         error: null,
       });
     }
-    const updateData = DiscountSchema.findByIdAndUpdate(
+    const updateData = await DiscountSchema.findByIdAndUpdate(
       { _id: request.params.id },
       {
         $set: {

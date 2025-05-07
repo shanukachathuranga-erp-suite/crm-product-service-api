@@ -67,7 +67,7 @@ const createCategory = async (request, response) => {
 
     const saveData = await category.save();
 
-    response.status(201).json({
+    return response.status(201).json({
       code: 201,
       message: "category has been saved...",
       data: saveData,
@@ -90,7 +90,7 @@ const updateCategory = async (request, response) => {
     }
 
     const updateData = await CategorySchema.findOneAndUpdate(
-      {'_id': request.params.id },
+      { _id: request.params.id },
       {
         $set: {
           categoryName: categoryName,
@@ -117,7 +117,7 @@ const deleteCategory = async (request, response) => {
         .json({ code: 400, message: "id required...", error: null });
     }
     const deletedData = await CategorySchema.findOneAndDelete({
-      '_id': request.params.id,
+      _id: request.params.id,
     });
     return response
       .status(204)
@@ -138,7 +138,7 @@ const findCategoryById = async (request, response) => {
         .json({ code: 400, message: "id required...", error: null });
     }
     const categoryData = await CategorySchema.findById({
-      '_id': request.params.id,
+      _id: request.params.id,
     });
     if (categoryData) {
       return response
@@ -169,11 +169,17 @@ const findAllCategories = async (request, response) => {
     }
 
     const skip = (pageIndex - 1) * pageSize;
-    const categoryList = await CategorySchema.find(query).limit(pageSize).skip(skip);
+    const categoryList = await CategorySchema.find(query)
+      .limit(pageSize)
+      .skip(skip);
     const categoryListCount = await CategorySchema.countDocuments(query);
     return response
       .status(200)
-      .json({ code: 200, message: "category data...", data: {list: categoryList, dataCount: categoryListCount} });
+      .json({
+        code: 200,
+        message: "category data...",
+        data: { list: categoryList, dataCount: categoryListCount },
+      });
   } catch (e) {
     return response
       .status(500)
